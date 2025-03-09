@@ -23,11 +23,9 @@ spec:
         volumeMounts:
         - name: psql-storage
           mountPath: /var/lib/postgresql/data
-        env:
-        - name: POSTGRES_USER
-          value: postgres
-        - name: POSTGRES_PASSWORD
-          value: postgres
+        envFrom:
+        - secretRef:
+            name: db-secrets
       volumes:
       - name: psql-storage
         persistentVolumeClaim:
