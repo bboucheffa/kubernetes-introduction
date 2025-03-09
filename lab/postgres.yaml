@@ -30,7 +30,8 @@ spec:
           value: postgres
       volumes:
       - name: psql-storage
-        emptyDir: {}
+        persistentVolumeClaim:
+          claimName: db-volume-claim
 
 
 ---
@@ -47,3 +48,33 @@ spec:
   - protocol: TCP
     port : 5432
     targetPort: 5432
+
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: db-volume
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/data/db_psql_0001/"
+
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: db-volume-claim
+  namespace: vote
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
